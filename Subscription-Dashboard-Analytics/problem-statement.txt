@@ -1,0 +1,142 @@
+Problem: Subscription Cost Optimizer
+Scenario
+
+Imagine you're managing multiple subscriptions:
+
+Netflix
+Spotify
+ChatGPT
+AWS
+Adobe
+GitHub Copilot
+YouTube Premium
+
+After a few months, you don't know:
+
+How much you're spending monthly
+Which subscriptions are active
+Which ones are expensive
+How much money can be saved by cancelling some subscriptions
+
+This is a real problem faced by students, developers, freelancers, and businesses.
+
+Project Name
+
+SubTrack AI - Subscription Cost Optimizer
+
+Features
+
+✅ Add Subscription
+
+✅ Search Subscription
+
+✅ Filter Active Subscriptions
+
+✅ Filter Expensive Plans
+
+✅ Monthly Cost Analysis
+
+✅ Yearly Cost Analysis
+
+✅ Savings Calculator
+
+✅ Responsive Dark Theme
+
+✅ Uses ALL ES6 Concepts
+
+ES6 Concepts Used
+1. Template Literals
+
+Dynamic cards
+
+return `
+<div class="card">
+   <h3>${name}</h3>
+</div>
+`
+2. Destructuring
+const {
+   name,
+   category,
+   monthlyCost,
+   active
+} = subscription;
+3. Spread Operator
+
+Add new subscription
+
+subscriptions = [
+   ...subscriptions,
+   newSubscription
+];
+4. Rest Operator
+
+Calculate multiple expenses
+
+function calculateExpenses(...amounts){
+   return amounts.reduce(
+      (sum,val)=>sum+val,
+      0
+   );
+}
+5. map()
+
+Create UI Cards
+
+subscriptions.map(subscription => ...)
+6. filter()
+
+Active subscriptions
+
+subscriptions.filter(
+   sub => sub.active
+)
+7. reduce()
+
+Total monthly spend
+
+subscriptions.reduce(
+   (sum, sub) =>
+      sum + sub.monthlyCost,
+   0
+);
+Full UI Layout
+------------------------------------------
+       SUBTRACK AI
+ Subscription Cost Optimizer
+------------------------------------------
+
+[ Search Subscription ]
+
+[ All ]
+[ Active ]
+[ Expensive ]
+
+------------------------------------------
+ Monthly Spend
+ ₹4,599
+------------------------------------------
+
+ Yearly Spend
+ ₹55,188
+------------------------------------------
+
+ Potential Savings
+ ₹19,200
+------------------------------------------
+
+Netflix
+Entertainment
+₹649
+
+Spotify
+Music
+₹119
+
+AWS
+Cloud
+₹1500
+
+ChatGPT
+AI
+₹1700
