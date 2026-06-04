@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SubTrack AI</title>
+
+    <style>
+        :root {
+            --bg: #0f172a;
+            --card: #1e293b;
+            --cardHover: #334155;
+            --primary: #38bdf8;
+            --success: #22c55e;
+            --danger: #ef4444;
+            --text: #f8fafc;
+            --muted: #94a3b8;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Inter, Segoe UI, sans-serif;
+        }
+
+        body {
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            padding: 25px;
+        }
+
+        .container {
+            max-width: 1300px;
+            margin: auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            font-size: 3rem;
+            background: linear-gradient(90deg, #38bdf8, #22c55e);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .header p {
+            color: var(--muted);
+            margin-top: 8px;
+        }
+
+        .search-box {
+            margin: 25px 0;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 15px;
+            border: none;
+            border-radius: 12px;
+            background: var(--card);
+            color: white;
+            font-size: 16px;
+        }
+
+        .actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 25px;
+        }
+
+        button {
+            border: none;
+            padding: 12px 18px;
+            border-radius: 10px;
+            cursor: pointer;
+            background: var(--primary);
+            color: white;
+            font-weight: 600;
+        }
+
+        button:hover {
+            opacity: .9;
+        }
+
+        .analytics {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .analytics-card {
+            background: var(--card);
+            padding: 25px;
+            border-radius: 16px;
+        }
+
+        .analytics-card h3 {
+            color: var(--muted);
+            margin-bottom: 10px;
+        }
+
+        .analytics-card p {
+            font-size: 1.8rem;
+            font-weight: bold;
+        }
+
+        .subscription-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .card {
+            background: var(--card);
+            padding: 20px;
+            border-radius: 16px;
+            transition: .3s;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            background: var(--cardHover);
+        }
+
+        .badge {
+            display: inline-block;
+            margin-top: 10px;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 13px;
+        }
+
+        .active {
+            background: rgba(34, 197, 94, .2);
+            color: #22c55e;
+        }
+
+        .inactive {
+            background: rgba(239, 68, 68, .2);
+            color: #ef4444;
+        }
+
+        .price {
+            margin-top: 15px;
+            font-size: 1.6rem;
+            color: var(--success);
+        }
+
+        .category {
+            color: var(--muted);
+            margin-top: 5px;
+        }
+
+        @media(max-width:768px) {
+
+            .header h1 {
+                font-size: 2rem;
+            }
+
+            .actions {
+                flex-direction: column;
+            }
+
+            button {
+                width: 100%;
+            }
+
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+
+        <div class="header">
+            <h1>SubTrack AI</h1>
+            <p>Subscription Cost Optimizer Dashboard</p>
+        </div>
+
+        <div class="search-box">
+            <input type="text" id="search" placeholder="Search subscriptions...">
+        </div>
+
+        <div class="actions">
+            <button onclick="showAll()">All Plans</button>
+            <button onclick="showActive()">Active Plans</button>
+            <button onclick="showExpensive()">Expensive Plans</button>
+            <button onclick="addSubscription()">Add Random Plan</button>
+        </div>
+
+        <div class="analytics" id="analytics"></div>
+
+        <div class="subscription-grid" id="subscriptions"></div>
+
+    </div>
+
+    <script>
+
+        // DATA
+
+        const initialSubscriptions = [
+            {
+                id: 1,
+                name: "Netflix",
+                category: "Entertainment",
+                monthlyCost: 649,
+                active: true
+            },
+            {
+                id: 2,
+                name: "Spotify",
+                category: "Music",
+                monthlyCost: 119,
+                active: true
+            },
+            {
+                id: 3,
+                name: "ChatGPT Plus",
+                category: "AI",
+                monthlyCost: 1700,
+                active: true
+            },
+            {
+                id: 4,
+                name: "AWS Sandbox",
+                category: "Cloud",
+                monthlyCost: 1500,
+                active: false
+            },
+            {
+                id: 5,
+                name: "Adobe Creative Cloud",
+                category: "Design",
+                monthlyCost: 900,
+                active: false
+            }
+        ];
+
+        // SPREAD OPERATOR
+
+        let subscriptions = [...initialSubscriptions];
+
+        const subscriptionContainer =
+            document.getElementById("subscriptions");
+
+        const analyticsContainer =
+            document.getElementById("analytics");
+
+
+        // REST OPERATOR + REDUCE
+
+        function calculateTotal(...amounts) {
+            return amounts.reduce(
+                (sum, value) => sum + value,
+                0
+            );
+        }
+
+        console.log(
+            calculateTotal(100, 200, 300, 400)
+        );
+
+
+        // ANALYTICS
+
+        function renderAnalytics() {
+
+            const monthlySpend =
+                subscriptions
+                    .filter(sub => sub.active)
+                    .reduce(
+                        (sum, sub) =>
+                            sum + sub.monthlyCost,
+                        0
+                    );
+
+            const yearlySpend =
+                monthlySpend * 12;
+
+            const savings =
+                subscriptions
+                    .filter(sub => !sub.active)
+                    .reduce(
+                        (sum, sub) =>
+                            sum + sub.monthlyCost,
+                        0
+                    ) * 12;
+
+            analyticsContainer.innerHTML = `
+
+        <div class="analytics-card">
+            <h3>Monthly Spend</h3>
+            <p>₹${monthlySpend.toLocaleString()}</p>
+        </div>
+
+        <div class="analytics-card">
+            <h3>Yearly Spend</h3>
+            <p>₹${yearlySpend.toLocaleString()}</p>
+        </div>
+
+        <div class="analytics-card">
+            <h3>Potential Savings</h3>
+            <p>₹${savings.toLocaleString()}</p>
+        </div>
+
+    `;
+        }
+
+
+        // MAP + TEMPLATE LITERALS + DESTRUCTURING
+
+        function renderSubscriptions(data) {
+
+            subscriptionContainer.innerHTML =
+                data.map(sub => {
+
+                    const {
+                        name,
+                        category,
+                        monthlyCost,
+                        active
+                    } = sub;
+
+                    return `
+        <div class="card">
+
+            <h2>${name}</h2>
+
+            <div class="category">
+                ${category}
+            </div>
+
+            <div class="price">
+                ₹${monthlyCost}
+            </div>
+
+            <div class="badge ${active
+                            ? "active"
+                            : "inactive"
+                        }">
+
+                ${active
+                            ? "Active"
+                            : "Inactive"
+                        }
+
+            </div>
+
+        </div>
+        `;
+
+                }).join("");
+        }
+
+
+        // FILTER
+
+        function showAll() {
+            renderSubscriptions(subscriptions);
+        }
+
+        function showActive() {
+
+            const activePlans =
+                subscriptions.filter(
+                    sub => sub.active
+                );
+
+            renderSubscriptions(activePlans);
+        }
+
+        function showExpensive() {
+
+            const expensivePlans =
+                subscriptions.filter(
+                    sub => sub.monthlyCost > 1000
+                );
+
+            renderSubscriptions(expensivePlans);
+        }
+
+
+        // SPREAD OPERATOR
+
+        function addSubscription() {
+
+            const randomPlan = {
+                id: Date.now(),
+                name: `New Service ${subscriptions.length + 1}`,
+                category: "Productivity",
+                monthlyCost:
+                    Math.floor(
+                        Math.random() * 2000
+                    ) + 200,
+                active:
+                    Math.random() > .5
+            };
+
+            subscriptions = [
+                ...subscriptions,
+                randomPlan
+            ];
+
+            renderSubscriptions(subscriptions);
+            renderAnalytics();
+        }
+
+
+        // SEARCH + FILTER
+        // Bug fixed by including the search based on category 
+        // Bug fixed for trimming the whitespace from the search bar for better searching
+        document
+            .getElementById("search")
+            .addEventListener("input", (e) => {
+
+                const keyword =
+                    e.target.value.toLowerCase().trim();
+
+                const filtered =
+                    subscriptions.filter(sub =>
+                        sub.name.toLowerCase().includes(keyword) || sub.category.toLowerCase().includes(keyword))
+
+                renderSubscriptions(filtered);
+
+            });
+
+
+        // INITIAL LOAD
+
+        renderSubscriptions(subscriptions);
+        renderAnalytics();
+
+    </script>
+
+</body>
+
+</html>
