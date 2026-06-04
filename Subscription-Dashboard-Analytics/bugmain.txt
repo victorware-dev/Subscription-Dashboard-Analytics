@@ -1,0 +1,229 @@
+Bug 1
+
+Search only checks name.
+
+Current:
+
+sub.name.toLowerCase().includes(keyword)
+
+Expected:
+Search should also find by category.
+
+Example:
+
+Typing AI should show ChatGPT Plus.
+Typing Music should show Spotify.
+
+---------------------------------------------------------------------------------------------------------------------------------------------------
+
+Bug 2
+
+User can enter only spaces.
+
+Example:
+
+"     "
+
+Search returns nothing.
+
+Fix:
+Trim whitespace before filtering.
+
+----------------------------------------------------------------------------------------------------------------------------------------------------
+
+Bug 3
+
+Duplicate IDs can theoretically occur.
+
+Current:
+
+id: Date.now()
+
+If two plans are added in the same millisecond, IDs may clash.
+
+----------------------------------------------------------------------------------------------------------------------------------------------------
+
+Bug 4
+
+Negative subscription cost allowed.
+
+If someone manually creates:
+
+{
+  monthlyCost: -500
+}
+
+Analytics become incorrect.
+
+Add validation.
+
+----------------------------------------------------------------------------------------------------------------------------------------------------
+
+Bug 5
+
+Monthly cost displayed without formatting.
+
+Current:
+
+₹${monthlyCost}
+
+Better:
+
+₹${monthlyCost.toLocaleString()}
+
+----------------------------------------------------------------------------------------------------------------------------------------------------
+
+Bug 6
+
+Expensive filter is hardcoded.
+
+Current:
+
+sub.monthlyCost > 1000
+
+Make threshold configurable.
+
+Bug 7
+
+Analytics show only active spending.
+
+Some users may want:
+
+Total subscriptions
+Active subscriptions
+Inactive subscriptions
+
+Add more cards.
+
+Bug 8
+
+Search results disappear after clicking "Add Random Plan".
+
+Steps:
+
+Search Netflix
+Add Random Plan
+
+Expected:
+Search filter remains.
+
+Actual:
+All subscriptions render.
+
+Bug 9
+
+No empty-state message.
+
+Search:
+
+xyz123
+
+Nothing appears.
+
+Better:
+
+No subscriptions found.
+Bug 10
+
+Inactive plans still appear in Expensive Plans.
+
+If business rule is:
+
+Show expensive active subscriptions only
+
+Current code fails.
+
+Bug 11
+
+No delete functionality.
+
+Cannot remove subscriptions.
+
+Add:
+
+deleteSubscription(id)
+Bug 12
+
+No edit functionality.
+
+Cannot update:
+
+Name
+Category
+Cost
+Status
+Bug 13
+
+Potential XSS issue.
+
+If a subscription name contains:
+
+"<script>alert('hack')</script>"
+
+it gets injected into HTML through:
+
+innerHTML
+Bug 14
+
+Analytics not recalculated after future edits.
+
+Currently only recalculated on:
+
+addSubscription()
+
+If you later implement delete/edit, analytics can become stale.
+
+Bug 15
+
+Random plan cost can exceed realistic values.
+
+Current:
+
+Math.floor(Math.random() * 2000) + 200
+
+Could create:
+
+₹2199
+
+Add business rules such as:
+
+Maximum ₹1500
+Minimum ₹99
+Challenge Bugs (Harder)
+Bug 16
+
+Sort subscriptions by cost.
+
+Add:
+
+Low → High
+High → Low
+Bug 17
+
+Prevent duplicate subscription names.
+
+Example:
+
+Netflix
+Netflix
+Netflix
+
+should not be allowed.
+
+Bug 18
+
+Show warning when yearly spend exceeds ₹50,000.
+
+Bug 19
+
+Store subscriptions in:
+
+localStorage
+
+so data survives page refresh.
+
+Bug 20
+
+Add a toggle button to switch:
+
+Active ↔ Inactive
